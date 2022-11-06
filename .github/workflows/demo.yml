@@ -18,6 +18,8 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      test01: ${{steps.build-out.outputs.task01}}
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -25,9 +27,25 @@ jobs:
         run: npm ci
       - name: Build website
         run: npm run build
+      - name: Upload dist 
+        uses: actions/upload-artifact@v3
+        with: 
+          name: dist-folder
+          path: dist
+      - name: Store outputs
+        id: build-out
+        run: echo "task01=Learn MLOps" >> $GITHUB_OUTPUT
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Download dist
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-folder
+      - name: Display artifacts
+        run: ls
+      - name: Display output
+        run: echo "${{needs.build.outputs.task01}}"
       - name: Deploy
         run: echo "Deploying..."
