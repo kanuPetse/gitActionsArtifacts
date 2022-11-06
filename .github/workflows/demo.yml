@@ -46,6 +46,6 @@ jobs:
       - name: Display artifacts
         run: ls
       - name: Display output
-        run: echo "${{needs.build.outputs.task01}}"
+        run: echo ${{needs.build.outputs.task01}}
       - name: Deploy
         run: echo "Deploying..."
